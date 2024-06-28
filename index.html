@@ -86,7 +86,7 @@
     }
 
     async function getLocation(ipAddress) {
-        const url = `http://ipinfo.io/${ipAddress}/json`;
+        const url = `https://ipinfo.io/${ipAddress}/json`;
         try {
             const response = await fetch(url);
             const data = await response.json();
